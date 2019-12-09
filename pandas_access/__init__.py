@@ -8,10 +8,11 @@ except ImportError:
     from io import BytesIO
 
 
-TABLE_RE = re.compile("CREATE TABLE \[(\w+)\]\s+\((.*?\));",
-                      re.MULTILINE | re.DOTALL)
+# TABLE_RE = re.compile("CREATE TABLE \[(\w+)\]\s+\((.*?\));",
+                      # re.MULTILINE | re.DOTALL)
+TABLE_RE = re.compile("CREATE TABLE \[(?P<table>.+)\]\s+\(([\S\s]+?)\);", re.MULTILINE)
 
-DEF_RE = re.compile("\s*\[(\w+)\]\s*(.*?),")
+DEF_RE = re.compile("\s*\[(.+)\]\s*(.*?),")
 
 
 def list_tables(rdb_file, encoding="latin-1"):
@@ -63,7 +64,6 @@ def read_schema(rdb_file, encoding='utf8'):
     schema = {}
     for table, defs in TABLE_RE.findall(schema_ddl):
         schema[table] = _extract_defs(defs)
-
     return schema
 
 
